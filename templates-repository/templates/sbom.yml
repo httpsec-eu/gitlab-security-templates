@@ -4,7 +4,7 @@ spec:
       default: security-dependency-sbom
       description: The stage where the job will run
     docker-image:
-      default: denis.rendler/dependency-scan:1.0
+      default: denisrendler/dependency-scan:1.0
       description: The Docker image used to run the job
     path:
       default: ./
