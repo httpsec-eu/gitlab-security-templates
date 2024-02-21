@@ -1,6 +1,6 @@
 
 include:
-	- project: 'denis.rendler/templates-test'
+	- project: 'denis.rendler/ci-templates'
 	  file: '/templates/sbom.yml'
 	  ref: 0.1
 	  inputs:
