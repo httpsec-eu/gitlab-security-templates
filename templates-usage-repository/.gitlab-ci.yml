@@ -1,0 +1,19 @@
+
+include:
+	- project: 'denis.rendler/templates-test'
+	  file: '/templates/sbom.yml'
+	  ref: 0.1
+	  inputs:
+		  stage: testing
+
+stages: [build, testing, deployment]
+
+App Building job:
+  stage: build
+  script:
+    - echo Building the app
+
+App deployment job:
+  stage: deployment
+  script:
+    - echo Deploying the app

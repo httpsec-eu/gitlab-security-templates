@@ -1,2 +1,2 @@
-# gitlab-security-components
-Article repository for building Gitlab security components
+# gitlab-security-templates
+Article repository for building Gitlab security template

@@ -1,0 +1,53 @@
+spec:
+  inputs:
+    stage:
+      default: security-dependency-sbom
+      description: The stage where the job will run
+    docker-image:
+      default: denis.rendler/dependency-scan:1.0
+      description: The Docker image used to run the job
+    path:
+      default: ./
+      description: The path, file or docker image to scan
+    report-type:
+      default: cyclonedx-json
+      description: The type of report to build
+      options:
+        - cyclonedx-json
+        - spdx-json
+    report-file:
+      default: dependency-sbom.json
+      description: The file name for the report
+    report-expire:
+      default: "1 year"
+      description: The amount of time Gitlab should keep the report
+      options:
+        - "30 days"
+        - "90 days"
+        - "1 year"
+      
+---
+
+"Build $[[ inputs.report-type ]] SBOM: $[[ inputs.path ]]":
+  stage: $[[ inputs.stage ]]
+  image: $[[ inputs.docker-image ]]
+  script:
+    - syft scan $[[ inputs.path ]] -o $[[ inputs.report-type]]=$[[ inputs.report-file ]]
+  tags:
+    - infosec
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_OPEN_MERGE_REQUESTS                       # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+      when: never
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: always
+  variables:
+    GIT_DEPTH: "50"
+  artifacts:
+    name: "sbom-$[[ inputs.report-type ]]-$CI_COMMIT_SHORT_SHA"
+    paths:
+      - $[[ inputs.report-file ]]
+    expire_in: $[[ inputs.report-expire ]]
+    reports:
+      dependency_scanning: $[[ inputs.report-file ]]
+  allow_failure: false
